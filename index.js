@@ -22,7 +22,7 @@ app.post('/upload', (req, res) => {
           } 
         ]);
         console.log(result.response.text())
-        res.json(JSON.parse(result.response.text()));    
+        res.text(result.response.text());    
     });
 
 });
