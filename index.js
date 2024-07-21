@@ -5,10 +5,10 @@ const genAI = new GoogleGenerativeAI('AIzaSyDWxWcWFFnOUJZ3uVVw2mwCZeZmC0A1PhU');
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 const app = express();
 const port = 3000;
-app.use(express.json({ limit: '100mb' }));
+app.use(express.text({ limit: '100mb', type:'text/plain' }));
 app.use(cors())
 app.post('/upload', (req, res) => {
-    const { uri } = req.body;
+    const uri = req.body;
     console.log(uri)
     if (!uri) return res.status(400).send({ error: 'No URI provided' });
     require("fs").writeFile("out.png", uri.replace(/^data:image\/png;base64,/, ""), 'base64', async function(err) {    
