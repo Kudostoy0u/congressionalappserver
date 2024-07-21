@@ -13,7 +13,7 @@ app.post('/upload', (req, res) => {
     if (!uri) return res.status(400).send({ error: 'No URI provided' });
     require("fs").writeFile("out.png", uri.replace(/^data:image\/png;base64,/, ""), 'base64', async function(err) {    
         const result = await model.generateContent([
-        "I want you to send back a JSON object only, not even formatting. It must have a recyclable key, the value of which is a boolean that says whether the object in focus is recyclable or not. There should also be a type key, the value of which is a string, saying the following: \"This is a or these are [type of object in focus], which is/are    \". Lastly, there should be an info key, the value of which is a string. This value should have any additional information or facts about its eco friendliness",
+        "I want you to send back a JSON object only, not even formatting. It must have a \"recyclable\" key, the value of which is a boolean that says whether the object in focus is recyclable or not. There should also be a \"type\" key, the value of which is a string, saying the following: \"This is a or these are [type of object in focus], which is/are    \". Lastly, there should be an \"info\"    key, the value of which is a string. This value should have any additional information or facts about its eco friendliness",
         {
             inlineData: {
               data: uri.replace(/^data:image\/png;base64,/, ""),
@@ -21,6 +21,7 @@ app.post('/upload', (req, res) => {
             },
           } 
         ]);
+        console.log(result.response.text())
         res.json(JSON.parse(result.response.text()));    
     });
 
