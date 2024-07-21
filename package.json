@@ -1,0 +1,24 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kudostoy0u/congressionalappserver.git"
+  },
+  "author": "Kudostoy0u",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kudostoy0u/congressionalappserver/issues"
+  },
+  "homepage": "https://github.com/Kudostoy0u/congressionalappserver#readme",
+  "description": "",
+  "dependencies": {
+    "@google/generative-ai": "^0.15.0",
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}
