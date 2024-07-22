@@ -1,5 +1,6 @@
 const express = require('express'); 
-var cors = require('cors')
+const cors = require('cors')
+const erBase = require("eventregistry");
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const genAI = new GoogleGenerativeAI('AIzaSyDWxWcWFFnOUJZ3uVVw2mwCZeZmC0A1PhU');
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -7,6 +8,37 @@ const app = express();
 const port = 3000;
 app.use(express.text({ limit: '100mb', type:'text/plain' }));
 app.use(cors())
+app.get('/news', async (req, res) => {
+  const postData = {
+    uri: '240f6a12-b9d8-40a6-b1c6-a220e31d08de',
+    infoArticleBodyLen: -1,
+    resultType: 'articles',
+    articlesSortBy: 'fq',
+    apiKey: '3af292d9-b0b4-46a1-abb0-a00e01e517f5',
+  };
+
+  try {
+    const response = await fetch('https://eventregistry.org/api/v1/article/getArticlesForTopicPage', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(postData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const articles = data.articles.results;
+
+    res.json({ articles });
+  } catch (error) {
+    console.error('Error fetching news articles:', error);
+    res.status(500).send('Internal Server Error');
+  }
+}); 
 app.post('/upload', (req, res) => {
     const uri = req.body;
     console.log(uri)
