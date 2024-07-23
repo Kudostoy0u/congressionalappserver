@@ -5,8 +5,8 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 const genAI = new GoogleGenerativeAI('AIzaSyDWxWcWFFnOUJZ3uVVw2mwCZeZmC0A1PhU');
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 const app = express();
-const port = 3000;
-const cache = { }
+const port = 8080;
+const cache = {};
 app.use(express.text({ limit: '100mb', type:'text/plain' }));
 app.use(cors())
 app.get('/news', async (req, res) => {
