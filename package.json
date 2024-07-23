@@ -21,7 +21,6 @@
     "@google/generative-ai": "^0.15.0",
     "cors": "^2.8.5",
     "eventregistry": "^9.1.0",
-    "express": "^4.19.2",
-    "redis": "^4.6.15"
+    "express": "^4.19.2"
   }
 }
