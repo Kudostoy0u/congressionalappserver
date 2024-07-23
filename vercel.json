@@ -3,7 +3,8 @@
     "builds": [
       {
         "src": "index.js",
-        "use": "@now/node"
+        "use": "@now/node",
+        "maxDuration": 60
       }
     ],
     "routes": [
@@ -11,10 +12,5 @@
         "src": "/(.*)",
         "dest": "index.js"
       }
-    ],
-    "functions": {
-      "." : {
-        "maxDuration": 60
-      }
-    }
+    ]
   }     
