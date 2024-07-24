@@ -89,7 +89,7 @@ app.get('/article', async (req, res) => {
     const articleData = data[uri].info;
 
     const newBody = await model.generateContent(
-      `Format this using markdown, for the small sections you can add ## and ###\n${articleData.title}\n${articleData.date} by ${articleData.authors[0] ? articleData.authors[0].name : 'Anonymous'}\n![Image](${articleData.image}) \n    ${articleData.body}`
+      `Format this using markdown, for the small sections you can add ## and ###\n${articleData.title}\n${articleData.date} by ${articleData.authors[0] ? articleData.authors[0].name : 'Anonymous'}\n    ![PUT NOTHING HERE](${articleData.image}) \n    ${articleData.body}`
     );
 
     // Cache the processed article content
