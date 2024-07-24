@@ -21,7 +21,7 @@ app.get('/news', async (req, res) => {
         infoArticleBodyLen: -1,
         resultType: 'articles',
         articlesSortBy: 'fq',
-        apiKey: '3af292d9-b0b4-46a1-abb0-a00e01e517f5',
+        apiKey: '1ffa7a20-c23f-434c-b785-12a05b4ebf06',
       }),
     });
 
