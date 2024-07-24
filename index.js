@@ -17,11 +17,11 @@ app.get('/news', async (req, res) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        uri: '240f6a12-b9d8-40a6-b1c6-a220e31d08de',
+        uri: '1ffa7a20-c23f-434c-b785-12a05b4ebf06',
         infoArticleBodyLen: -1,
         resultType: 'articles',
         articlesSortBy: 'fq',
-        apiKey: '1ffa7a20-c23f-434c-b785-12a05b4ebf06',
+        apiKey: '3af292d9-b0b4-46a1-abb0-a00e01e517f5',
       }),
     });
 
