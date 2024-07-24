@@ -5,12 +5,12 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 const genAI = new GoogleGenerativeAI('AIzaSyDWxWcWFFnOUJZ3uVVw2mwCZeZmC0A1PhU');
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 const app = express();
-const port = 8080;
-const cache = {};
+const port = 3000;
+const cache = {};           
 app.use(express.text({ limit: '100mb', type:'text/plain' }));
 app.use(cors())
 app.get('/news', async (req, res) => {
-  try {
+  try {   
     const response = await fetch('https://eventregistry.org/api/v1/article/getArticlesForTopicPage', {
       method: 'POST',
       headers: {
@@ -89,7 +89,7 @@ app.get('/article', async (req, res) => {
     const articleData = data[uri].info;
 
     const newBody = await model.generateContent(
-      `Format this using markdown, for the small sections you can add ## and ###\n${articleData.title}\n${articleData.date} by ${articleData.authors[0] ? articleData.authors[0].name : 'Anonymous'}\n${articleData.body}`
+      `Format this using markdown, for the small sections you can add ## and ###\n${articleData.title}\n${articleData.date} by ${articleData.authors[0] ? articleData.authors[0].name : 'Anonymous'}\n(embed this image url: ${articleData.image}) \n    ${articleData.body}`
     );
 
     // Cache the processed article content
