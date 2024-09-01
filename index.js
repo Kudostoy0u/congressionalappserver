@@ -139,7 +139,7 @@ const getAllPosts = async () => {
 app.post('/posts', async (req, res) => {
   const { id, title, content, author, profilePicture } = req.body;
 
-  if (!id || !title || !content) {
+  if (!id || !title || !content || !author) {
     return res.status(400).send({ error: 'Missing required fields' });
   }
 
@@ -197,9 +197,9 @@ app.post('/like', async (req, res) => {
 
 // Endpoint to comment on a post
 app.post('/comment', async (req, res) => {
-  const { id, comment} = req.body;
+  const { id, comment, author} = req.body;
 
-  if (!id || !comment) {
+  if (!id || !comment || !author) {
     return res.status(400).send({ error: 'Missing required fields' });
   }
 
@@ -211,7 +211,7 @@ app.post('/comment', async (req, res) => {
       return res.status(404).send({ error: 'Post not found' });
     }
 
-    posts[postIndex].comments.push({ comment});
+    posts[postIndex].comments.push({comment:`${author}: ${comment}`});
     await set('posts', posts);
     res.send({ message: 'Comment added successfully' });
   } catch (error) {
