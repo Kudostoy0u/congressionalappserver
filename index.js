@@ -47,7 +47,6 @@ app.get('/news', async (req, res) => {
 }); 
 app.post('/upload', (req, res) => {
     const uri = req.body;
-    console.log(uri)
     if (!uri) return res.status(400).send({ error: 'No URI provided' });
     require("fs").writeFile("out.png", uri.replace(/^data:image\/png;base64,/, ""), 'base64', async function(err) {    
         const result = await model.generateContent([
@@ -115,7 +114,6 @@ const read = async (key) => await kv.get(key);
 
 // Function to write to Vercel KV
 const set = async (key, jsonData) => await kv.set(key, JSON.stringify(jsonData, null, 2));
-
 // Function to update Vercel KV
 const update = async (key, newData) => {
   const existingData = await read(key) || {};
@@ -128,6 +126,7 @@ const update = async (key, newData) => {
 const getAllPosts = async () => {
   try {
     const posts = await read('posts');
+    console.log(posts)
     return posts || [];
   } catch (error) {
     console.error('Error retrieving posts:', error);
@@ -137,6 +136,7 @@ const getAllPosts = async () => {
 
 // Endpoint to post a new article or post
 app.post('/posts', async (req, res) => {
+  console.log(req.body)
   const { id, title, content, author, profilePicture } = req.body;
 
   if (!id || !title || !content || !author) {
@@ -144,7 +144,7 @@ app.post('/posts', async (req, res) => {
   }
 
   try {
-    const posts = await getAllPosts();
+    let posts = await getAllPosts();
     const existingPost = posts.find(post => post.id === id);
 
     if (existingPost) {
@@ -160,9 +160,8 @@ app.post('/posts', async (req, res) => {
       likes: 0,
       comments: [],
     };
-
-    posts.push(postData);
-    await set('posts', posts);
+    posts.push(postData)
+    set("posts",posts)
     res.status(201).send({ message: 'Post created successfully' });
   } catch (error) {
     console.error('Error creating post:', error);
@@ -172,22 +171,35 @@ app.post('/posts', async (req, res) => {
 
 // Endpoint to like a post
 app.post('/like', async (req, res) => {
-  const { id } = req.body;
+  const { email, postId, newHasLiked } = req.body;
 
-  if (!id) {
-    return res.status(400).send({ error: 'Missing post ID' });
+  if (!email || !postId) {
+    return res.status(400).send({ error: 'Missing email or post ID' });
   }
 
   try {
+    // Update the post's like count
     const posts = await getAllPosts();
-    const postIndex = posts.findIndex(post => post.id === id);
+    const postIndex = posts.findIndex(post => post.id === postId);
 
     if (postIndex === -1) {
       return res.status(404).send({ error: 'Post not found' });
     }
 
-    posts[postIndex].likes += 1;
-    await set('posts', posts);
+    posts[postIndex].likes += newHasLiked ? 1 : -1;
+    await kv.set('posts', posts);
+
+    // Update the user's liked posts
+    let likedPosts = await kv.get(email) || [];
+    if (newHasLiked) {
+      if (!likedPosts.includes(postId)) {
+        likedPosts.push(postId);
+      }
+    } else {
+      likedPosts = likedPosts.filter(id => id !== postId);
+    }
+    await kv.set(email, likedPosts);
+
     res.send({ message: 'Post liked successfully' });
   } catch (error) {
     console.error('Error liking post:', error);
@@ -195,6 +207,17 @@ app.post('/like', async (req, res) => {
   }
 });
 
+// Endpoint to get liked posts for a user
+app.get('/likes/:email', async (req, res) => {
+  const { email } = req.params;
+  try {
+    const likedPosts = await kv.get(email) || [];
+    res.status(200).send(likedPosts);
+  } catch (error) {
+    console.error('Error fetching liked posts:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 // Endpoint to comment on a post
 app.post('/comment', async (req, res) => {
   const { id, comment, author} = req.body;
